@@ -1,0 +1,8 @@
+#build
+target/
+
+#workspace
+.idea/
+
+#resource
+src/main/resources/

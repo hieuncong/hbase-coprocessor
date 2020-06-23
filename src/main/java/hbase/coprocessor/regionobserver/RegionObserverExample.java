@@ -5,10 +5,15 @@ import org.apache.hadoop.hbase.CellBuilderFactory;
 import org.apache.hadoop.hbase.CellBuilderType;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.coprocessor.ObserverContext;
 import org.apache.hadoop.hbase.coprocessor.RegionCoprocessor;
 import org.apache.hadoop.hbase.coprocessor.RegionCoprocessorEnvironment;
 import org.apache.hadoop.hbase.coprocessor.RegionObserver;
+import org.apache.hadoop.hbase.filter.BinaryComparator;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.RowFilter;
 import org.apache.hadoop.hbase.regionserver.InternalScanner;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -19,6 +24,7 @@ import java.util.Optional;
 
 public class RegionObserverExample implements RegionCoprocessor, RegionObserver {
     private static final byte[] ADMIN = Bytes.toBytes("admin");
+    private static final byte[] EMP = Bytes.toBytes("emp");
     private static final byte[] COLUMN_FAMILY = Bytes.toBytes("details");
     private static final byte[] COLUMN = Bytes.toBytes("Admin_det");
     private static final byte[] VALUE = Bytes.toBytes("You can't see Admin details");
@@ -33,6 +39,20 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
             throws IOException {
 
         if (Bytes.equals(get.getRow(), ADMIN)) {
+            Cell c = CellBuilderFactory
+                    .create(CellBuilderType.SHALLOW_COPY)
+                    .setRow(get.getRow())
+                    .setFamily(COLUMN_FAMILY)
+                    .setQualifier(COLUMN)
+                    .setValue(VALUE)
+                    .setTimestamp(System.currentTimeMillis())
+                    .setType(Cell.Type.Put)
+                    .build();
+            results.add(c);
+            e.bypass();
+        }
+
+        if (Bytes.equals(get.getRow(), EMP)) {
             Cell c = CellBuilderFactory
                     .create(CellBuilderType.SHALLOW_COPY)
                     .setRow(get.getRow())
@@ -60,5 +80,11 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
             }
         }
         return hasMore;
+    }
+
+    @Override
+    public void preScannerOpen(final ObserverContext<RegionCoprocessorEnvironment> e, final Scan scan) throws IOException {
+        Filter filter = new RowFilter(CompareFilter.CompareOp.NOT_EQUAL, new BinaryComparator(ADMIN));
+        scan.setFilter(filter);
     }
 }

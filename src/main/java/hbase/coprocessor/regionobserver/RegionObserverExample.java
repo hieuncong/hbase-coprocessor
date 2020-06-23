@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class RegionObserverExample implements RegionCoprocessor, RegionObserver {
-    private static final byte[] ADMIN = Bytes.toBytes("r1");
+    private static final byte[] ROW = Bytes.toBytes("admin");
     private static final byte[] COLUMN_FAMILY = Bytes.toBytes("details");
     private static final byte[] COLUMN = Bytes.toBytes("Admin_det");
     private static final byte[] VALUE = Bytes.toBytes("You can't see Admin details");
@@ -29,7 +29,7 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
     public void preGetOp(final ObserverContext<RegionCoprocessorEnvironment> e, final Get get, final List<Cell> results)
             throws IOException {
 
-        if (Bytes.equals(get.getRow(), ADMIN)) {
+        if (Bytes.equals(get.getRow(), ROW)) {
             Cell c = CellBuilderFactory
                     .create(CellBuilderType.SHALLOW_COPY)
                     .setRow(get.getRow())

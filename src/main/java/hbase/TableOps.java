@@ -1,13 +1,14 @@
 package hbase;
 
+import hbase.coprocessor.regionobserver.RegionObserverExample;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hbase.Coprocessor;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Admin;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.io.compress.Compression;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 
@@ -15,8 +16,8 @@ public class TableOps {
     private static Configuration config;
     private static Connection connection;
     private static Admin admin;
-    public static TableName tableName = TableName.valueOf("test");
-    public static Table table;
+    private static TableName tableName = TableName.valueOf("test");
+    private static Table table;
 
     static {
         try {
@@ -32,5 +33,16 @@ public class TableOps {
 
     public static void main(String[] args) throws IOException {
         System.out.println(table.getDescriptor());
+        String path = "hdfs://master:9000/user/hadoop/hbase-coprocessor-1.0.jar";
+        TableDescriptor tableDescriptor = TableDescriptorBuilder
+                .newBuilder(tableName)
+                .setValue("COPROCESSOR$1", path + "|"
+                        + RegionObserverExample.class.getCanonicalName() + "|"
+                        + Coprocessor.PRIORITY_USER)
+                .setColumnFamily(ColumnFamilyDescriptorBuilder
+                        .newBuilder(Bytes.toBytes("f1"))
+                        .build())
+                .build();
+        admin.modifyTable(tableDescriptor);
     }
 }

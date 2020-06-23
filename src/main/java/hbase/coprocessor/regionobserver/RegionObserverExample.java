@@ -47,18 +47,18 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
         }
     }
 
-    @Override
-    public boolean postScannerNext(final ObserverContext<RegionCoprocessorEnvironment> e, final InternalScanner s,
-                                   final List<Result> results, final int limit, final boolean hasMore) throws IOException {
-        Result result = null;
-        Iterator<Result> iterator = results.iterator();
-        while (iterator.hasNext()) {
-            result = iterator.next();
-            if (Bytes.equals(result.getRow(), ROW)) {
-                iterator.remove();
-                break;
-            }
-        }
-        return hasMore;
-    }
+//    @Override
+//    public boolean postScannerNext(final ObserverContext<RegionCoprocessorEnvironment> e, final InternalScanner s,
+//                                   final List<Result> results, final int limit, final boolean hasMore) throws IOException {
+//        Result result = null;
+//        Iterator<Result> iterator = results.iterator();
+//        while (iterator.hasNext()) {
+//            result = iterator.next();
+//            if (Bytes.equals(result.getRow(), ROW)) {
+//                iterator.remove();
+//                break;
+//            }
+//        }
+//        return hasMore;
+//    }
 }

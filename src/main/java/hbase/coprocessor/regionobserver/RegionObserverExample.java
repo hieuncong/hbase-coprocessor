@@ -1,7 +1,8 @@
 package hbase.coprocessor.regionobserver;
 
 import org.apache.hadoop.hbase.Cell;
-import org.apache.hadoop.hbase.CellUtil;
+import org.apache.hadoop.hbase.CellBuilderFactory;
+import org.apache.hadoop.hbase.CellBuilderType;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.coprocessor.ObserverContext;
 import org.apache.hadoop.hbase.coprocessor.RegionCoprocessor;
@@ -29,8 +30,15 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
             throws IOException {
 
         if (Bytes.equals(get.getRow(), ADMIN)) {
-            Cell c = CellUtil.createCell(get.getRow(), COLUMN_FAMILY, COLUMN,
-                    System.currentTimeMillis(), (byte) 4, VALUE);
+            Cell c = CellBuilderFactory
+                    .create(CellBuilderType.SHALLOW_COPY)
+                    .setRow(get.getRow())
+                    .setFamily(COLUMN_FAMILY)
+                    .setQualifier(COLUMN)
+                    .setValue(VALUE)
+                    .setTimestamp(System.currentTimeMillis())
+                    .setType(Cell.Type.Put)
+                    .build();
             results.add(c);
             e.bypass();
         }

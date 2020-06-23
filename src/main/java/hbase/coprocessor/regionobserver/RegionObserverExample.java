@@ -52,7 +52,7 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
             e.bypass();
         }
 
-        if (Bytes.equals(get.getRow(), EMP)) {
+        else if (Bytes.equals(get.getRow(), EMP)) {
             Cell c = CellBuilderFactory
                     .create(CellBuilderType.SHALLOW_COPY)
                     .setRow(get.getRow())

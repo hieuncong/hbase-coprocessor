@@ -4,21 +4,18 @@ import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellBuilderFactory;
 import org.apache.hadoop.hbase.CellBuilderType;
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.coprocessor.ObserverContext;
 import org.apache.hadoop.hbase.coprocessor.RegionCoprocessor;
 import org.apache.hadoop.hbase.coprocessor.RegionCoprocessorEnvironment;
 import org.apache.hadoop.hbase.coprocessor.RegionObserver;
-import org.apache.hadoop.hbase.regionserver.InternalScanner;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 public class RegionObserverExample implements RegionCoprocessor, RegionObserver {
-    private static final byte[] ROW = Bytes.toBytes("admin");
+    private static final byte[] ADMIN = Bytes.toBytes("admin");
     private static final byte[] COLUMN_FAMILY = Bytes.toBytes("details");
     private static final byte[] COLUMN = Bytes.toBytes("Admin_det");
     private static final byte[] VALUE = Bytes.toBytes("You can't see Admin details");
@@ -32,7 +29,7 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
     public void preGetOp(final ObserverContext<RegionCoprocessorEnvironment> e, final Get get, final List<Cell> results)
             throws IOException {
 
-        if (Bytes.equals(get.getRow(), ROW)) {
+        if (Bytes.equals(get.getRow(), ADMIN)) {
             Cell c = CellBuilderFactory
                     .create(CellBuilderType.SHALLOW_COPY)
                     .setRow(get.getRow())

@@ -2,6 +2,7 @@ package hbase;
 
 import com.google.protobuf.ServiceException;
 import hbase.coprocessor.endpoint.Sum;
+import hbase.coprocessor.endpoint.SumEndpoint;
 import hbase.coprocessor.regionobserver.RegionObserverExample;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -36,10 +37,11 @@ public class TableOps {
     }
 
     public static void main(String[] args) throws IOException {
-        sumEndpointExample();
+        updateTableAtt();
     }
 
-    public static void sumEndpointExample() {
+    public static void sumEndpointExample() throws IOException {
+        System.out.println(table.getDescriptor());
         final Sum.SumRequest request = Sum.SumRequest.newBuilder().setFamily("f1").setColumn("a").build();
         try {
             Map<byte[], Long> results = table.coprocessorService(
@@ -52,7 +54,7 @@ public class TableOps {
                             CoprocessorRpcUtils.BlockingRpcCallback<Sum.SumResponse> rpcCallback = new CoprocessorRpcUtils.BlockingRpcCallback<>();
                             aggregate.getSum(null, request, rpcCallback);
                             Sum.SumResponse response = rpcCallback.get();
-
+                            System.out.println(response);
                             return response.hasSum() ? response.getSum() : 0L;
                         }
                     }
@@ -69,11 +71,15 @@ public class TableOps {
     }
 
     public static void updateTableAtt() throws IOException {
-        String path = "hdfs://master:9000/user/hadoop/hbase-coprocessor-1.0.jar";
+        String regionObserver = "hdfs://master:9000/user/hadoop/hbase-coprocessor-regionobserver-1.0.jar";
+        String endpoint = "hdfs://master:9000/user/hadoop/hbase-coprocessor-endpoint-1.0.jar";
         TableDescriptor tableDescriptor = TableDescriptorBuilder
                 .newBuilder(tableName)
-                .setValue("COPROCESSOR$1", path + "|"
-                        + RegionObserverExample.class.getCanonicalName() + "|"
+//                .setValue("COPROCESSOR$1", regionObserver + "|"
+//                        + RegionObserverExample.class.getCanonicalName() + "|"
+//                        + Coprocessor.PRIORITY_USER)
+                .setValue("COPROCESSOR$1", endpoint + "|"
+                        + SumEndpoint.class.getCanonicalName() + "|"
                         + Coprocessor.PRIORITY_USER)
                 .setColumnFamily(ColumnFamilyDescriptorBuilder
                         .newBuilder(Bytes.toBytes("f1"))

@@ -19,29 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SumEndpoint extends Sum.SumService implements Coprocessor, CoprocessorService{
-    private static Configuration config;
-    private static Connection connection;
-    private static Admin admin;
-    private static TableName tableName = TableName.valueOf("test");
-    private static Table table;
-
-    static {
-        try {
-            config = HBaseConfiguration.create();
-            config.addResource(new Path("src/main/resources/hbase-site-vm.xml"));
-            connection = ConnectionFactory.createConnection(config);
-            table = connection.getTable(tableName);
-            admin = connection.getAdmin();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private RegionCoprocessorEnvironment env;
 
     @Override
     public Service getService() {
-        return (Service) this;
+        return this;
     }
 
     @Override

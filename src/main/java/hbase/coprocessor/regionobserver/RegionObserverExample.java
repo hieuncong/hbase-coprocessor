@@ -44,7 +44,7 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
     public void prePut(ObserverContext<RegionCoprocessorEnvironment> c, Put put, WALEdit edit, Durability durability) throws IOException {
         byte[] row1 = put.getRow();
         byte[] value1 = CellUtil.cloneValue(put.get(Bytes.toBytes("f1"), Bytes.toBytes("a")).get(0));
-        byte[] value2 = CellUtil.cloneValue(put.get(Bytes.toBytes("f1"), Bytes.toBytes("b")).get(1));
+        byte[] value2 = CellUtil.cloneValue(put.get(Bytes.toBytes("f1"), Bytes.toBytes("b")).get(0));
 
         Put put2 = new Put(value1);
         put2.addColumn(Bytes.toBytes("f1"), Bytes.toBytes("row"), row1);

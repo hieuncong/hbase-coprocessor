@@ -28,7 +28,7 @@ public class TableOps {
     static {
         try {
             config = HBaseConfiguration.create();
-            config.addResource(new Path("src/main/resources/hbase-site-vm.xml"));
+//            config.addResource(new Path("src/main/resources/hbase-site-vm.xml"));
             connection = ConnectionFactory.createConnection(config);
             table1 = connection.getTable(tableName1);
             table2 = connection.getTable(tableName2);
@@ -39,7 +39,7 @@ public class TableOps {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println(config);
+        System.out.println(table1);
 //        updateTableAtt();
 //        Put p = new Put(Bytes.toBytes("r1"));
 //        p.addColumn(Bytes.toBytes("f1"), Bytes.toBytes("a"), Bytes.toBytes("v1"));

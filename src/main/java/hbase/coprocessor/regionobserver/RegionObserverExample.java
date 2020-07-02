@@ -1,24 +1,17 @@
 package hbase.coprocessor.regionobserver;
 
-import org.apache.hadoop.hbase.Cell;
-import org.apache.hadoop.hbase.CellBuilderFactory;
-import org.apache.hadoop.hbase.CellBuilderType;
-import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hbase.*;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.coprocessor.ObserverContext;
 import org.apache.hadoop.hbase.coprocessor.RegionCoprocessor;
 import org.apache.hadoop.hbase.coprocessor.RegionCoprocessorEnvironment;
 import org.apache.hadoop.hbase.coprocessor.RegionObserver;
-import org.apache.hadoop.hbase.filter.BinaryComparator;
-import org.apache.hadoop.hbase.filter.CompareFilter;
-import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.RowFilter;
-import org.apache.hadoop.hbase.regionserver.InternalScanner;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.hbase.wal.WALEdit;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +21,25 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
     private static final byte[] COLUMN_FAMILY = Bytes.toBytes("family");
     private static final byte[] COLUMN = Bytes.toBytes("qualifier");
     private static final byte[] VALUE = Bytes.toBytes("You can't see this row");
+
+    private static Configuration config;
+    private static Connection connection;
+    private static TableName tableName1 = TableName.valueOf("test");
+    private static Table table1;
+    private static TableName tableName2 = TableName.valueOf("test2");
+    private static Table table2;
+
+    static {
+        try {
+            config = HBaseConfiguration.create();
+            config.addResource(new Path("src/main/resources/hbase-site-vm.xml"));
+            connection = ConnectionFactory.createConnection(config);
+            table1 = connection.getTable(tableName1);
+            table2 = connection.getTable(tableName2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public Optional<RegionObserver> getRegionObserver() {
@@ -68,23 +80,8 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
     }
 
     @Override
-    public boolean postScannerNext(final ObserverContext<RegionCoprocessorEnvironment> e, final InternalScanner s,
-                                   final List<Result> results, final int limit, final boolean hasMore) throws IOException {
-        Result result = null;
-        Iterator<Result> iterator = results.iterator();
-        while (iterator.hasNext()) {
-            result = iterator.next();
-            if (Bytes.equals(result.getRow(), ADMIN)) {
-                iterator.remove();
-                break;
-            }
-        }
-        return hasMore;
-    }
-
-    @Override
-    public void preScannerOpen(final ObserverContext<RegionCoprocessorEnvironment> e, final Scan scan) throws IOException {
-        Filter filter = new RowFilter(CompareFilter.CompareOp.NOT_EQUAL, new BinaryComparator(ADMIN));
-        scan.setFilter(filter);
+    public void postPut(ObserverContext<RegionCoprocessorEnvironment> c, Put put, WALEdit edit, Durability durability) throws IOException {
+        table2.put(put);
+        c.bypass();
     }
 }

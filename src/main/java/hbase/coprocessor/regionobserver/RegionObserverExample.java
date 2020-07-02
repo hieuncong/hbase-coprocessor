@@ -42,6 +42,7 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
         connection.close();
     }
 
+    //Create secondary index on another table
     @Override
     public void postPut(ObserverContext<RegionCoprocessorEnvironment> c, Put put, WALEdit edit, Durability durability) throws IOException {
         byte[] tableName = c.getEnvironment().getRegionInfo().getTable().getName();
@@ -63,6 +64,7 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
         indexTbl.close();
     }
 
+    //Provide security on specific row
     @Override
     public void preGetOp(final ObserverContext<RegionCoprocessorEnvironment> e, final Get get, final List<Cell> results)
             throws IOException {

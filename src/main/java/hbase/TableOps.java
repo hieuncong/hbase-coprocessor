@@ -2,7 +2,6 @@ package hbase;
 
 import com.google.protobuf.ServiceException;
 import hbase.coprocessor.endpoint.Sum;
-import hbase.coprocessor.endpoint.SumEndpoint;
 import hbase.coprocessor.regionobserver.RegionObserverExample;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -37,7 +36,7 @@ public class TableOps {
     }
 
     public static void main(String[] args) throws IOException {
-        updateTableAtt();
+        sumEndpointExample();
     }
 
     public static void sumEndpointExample() throws IOException {
@@ -72,14 +71,10 @@ public class TableOps {
 
     public static void updateTableAtt() throws IOException {
         String regionObserver = "hdfs://master:9000/user/hadoop/hbase-coprocessor-regionobserver-1.0.jar";
-        String endpoint = "hdfs://master:9000/user/hadoop/hbase-coprocessor-endpoint-1.0.jar";
         TableDescriptor tableDescriptor = TableDescriptorBuilder
                 .newBuilder(tableName)
-//                .setValue("COPROCESSOR$1", regionObserver + "|"
-//                        + RegionObserverExample.class.getCanonicalName() + "|"
-//                        + Coprocessor.PRIORITY_USER)
-                .setValue("COPROCESSOR$1", endpoint + "|"
-                        + SumEndpoint.class.getCanonicalName() + "|"
+                .setValue("COPROCESSOR$1", regionObserver + "|"
+                        + RegionObserverExample.class.getCanonicalName() + "|"
                         + Coprocessor.PRIORITY_USER)
                 .setColumnFamily(ColumnFamilyDescriptorBuilder
                         .newBuilder(Bytes.toBytes("f1"))

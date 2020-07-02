@@ -79,9 +79,4 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
         }
     }
 
-    @Override
-    public void postPut(ObserverContext<RegionCoprocessorEnvironment> c, Put put, WALEdit edit, Durability durability) throws IOException {
-        table2.put(put);
-        c.bypass();
-    }
 }

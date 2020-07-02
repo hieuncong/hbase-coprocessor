@@ -23,7 +23,7 @@
                     <archive>
                         <manifest>
 <!--                            <mainClass>hbase.coprocessor.regionobserver.RegionObserverExample</mainClass>-->
-                            <mainClass>hbase.coprocessor.endpoint.SumEndpoint</mainClass>
+                            <mainClass>hbase.coprocessor.endpoint.SumEndPoint</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

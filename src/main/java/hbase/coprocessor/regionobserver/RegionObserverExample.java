@@ -22,25 +22,6 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
     private static final byte[] COLUMN = Bytes.toBytes("qualifier");
     private static final byte[] VALUE = Bytes.toBytes("You can't see this row");
 
-    private static Configuration config;
-    private static Connection connection;
-    private static TableName tableName1 = TableName.valueOf("test");
-    private static Table table1;
-    private static TableName tableName2 = TableName.valueOf("test2");
-    private static Table table2;
-
-    static {
-        try {
-            config = HBaseConfiguration.create();
-            config.addResource(new Path("src/main/resources/hbase-site-vm.xml"));
-            connection = ConnectionFactory.createConnection(config);
-            table1 = connection.getTable(tableName1);
-            table2 = connection.getTable(tableName2);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public Optional<RegionObserver> getRegionObserver() {
         return Optional.of(this);

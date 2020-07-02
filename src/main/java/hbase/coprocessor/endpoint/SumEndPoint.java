@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SumEndPoint extends Sum.SumService implements Coprocessor, CoprocessorService{
+public class SumEndPoint extends Sum.SumService implements Coprocessor, CoprocessorService {
 
     private RegionCoprocessorEnvironment env;
 
@@ -38,12 +38,7 @@ public class SumEndPoint extends Sum.SumService implements Coprocessor, Coproces
 
     @Override
     public void stop(CoprocessorEnvironment env) throws IOException {
-
-    }
-
-    @Override
-    public Iterable<Service> getServices() {
-        return null;
+        // do nothing
     }
 
     @Override
@@ -82,5 +77,4 @@ public class SumEndPoint extends Sum.SumService implements Coprocessor, Coproces
 
         done.run(response);
     }
-
 }

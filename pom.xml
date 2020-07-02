@@ -6,8 +6,8 @@
 
     <groupId>com.github.hieuncong</groupId>
     <artifactId>hbase-coprocessor</artifactId>
-    <version>endpoint-1.0</version>
-<!--    <version>regionobserver-1.0</version>-->
+<!--    <version>endpoint-1.0</version>-->
+    <version>regionobserver-1.0</version>
     <build>
         <plugins>
             <plugin>
@@ -23,8 +23,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-<!--                            <mainClass>hbase.coprocessor.regionobserver.RegionObserverExample</mainClass>-->
-                            <mainClass>hbase.coprocessor.endpoint.SumEndPoint</mainClass>
+                            <mainClass>hbase.coprocessor.regionobserver.RegionObserverExample</mainClass>
+<!--                            <mainClass>hbase.coprocessor.endpoint.SumEndPoint</mainClass>-->
                         </manifest>
                     </archive>
                     <descriptorRefs>

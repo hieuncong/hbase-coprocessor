@@ -52,15 +52,23 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
             return;
         }
 
-        byte[] row1 = put.getRow();
-        byte[] value1 = CellUtil.cloneValue(put.get(Bytes.toBytes("f1"), Bytes.toBytes("q1")).get(0));
-
-        Put put2 = new Put(value1);
-        put2.addColumn(Bytes.toBytes("f1"), Bytes.toBytes("row"), row1);
-
+        byte[] row1;
+        byte[] value1;
         TableName indexTblName = TableName.valueOf(INDEX_TABLE);
-        Table indexTbl = connection.getTable(indexTblName);
-        indexTbl.put(put2);
+        Table indexTbl = null;
+
+        try {
+            row1 = put.getRow();
+            value1 = CellUtil.cloneValue(put.get(Bytes.toBytes("f1"), Bytes.toBytes("q1")).get(0));
+
+            Put put2 = new Put(value1);
+            put2.addColumn(Bytes.toBytes("f1"), Bytes.toBytes("row"), row1);
+
+            indexTbl = connection.getTable(indexTblName);
+            indexTbl.put(put2);
+        } catch (IndexOutOfBoundsException e) {
+            row1 = null;
+        }
         indexTbl.close();
     }
 

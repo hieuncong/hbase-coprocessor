@@ -44,7 +44,7 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
 
     //Create secondary index on another table
     @Override
-    public void postPut(ObserverContext<RegionCoprocessorEnvironment> c, Put put, WALEdit edit, Durability durability) throws IOException {
+    public void prePut(ObserverContext<RegionCoprocessorEnvironment> c, Put put, WALEdit edit, Durability durability) throws IOException {
         byte[] tableName = c.getEnvironment().getRegionInfo().getTable().getName();
 
         // Not necessary though if you register the coprocessor for the specific table

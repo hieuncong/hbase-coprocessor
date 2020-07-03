@@ -55,7 +55,7 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
         byte[] row1;
         byte[] value1;
         TableName indexTblName = TableName.valueOf(INDEX_TABLE);
-        Table indexTbl = null;
+        Table indexTbl = connection.getTable(indexTblName);
 
         try {
             row1 = put.getRow();
@@ -64,7 +64,6 @@ public class RegionObserverExample implements RegionCoprocessor, RegionObserver 
             Put put2 = new Put(value1);
             put2.addColumn(Bytes.toBytes("f1"), Bytes.toBytes("row"), row1);
 
-            indexTbl = connection.getTable(indexTblName);
             indexTbl.put(put2);
         } catch (IndexOutOfBoundsException e) {
             row1 = null;
